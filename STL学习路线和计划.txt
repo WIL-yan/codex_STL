@@ -1,0 +1,707 @@
+﻿STL学习路线和计划
+
+适合对象：
+已经学过C++基础语法，知道变量、函数、类、引用、指针、模板基础，但对STL还不系统的人。
+
+总目标：
+1. 能熟练选择合适的容器。
+2. 能正确使用迭代器遍历和修改数据。
+3. 能熟练使用常用算法，少写重复循环。
+4. 能理解容器、迭代器、算法、函数对象之间的关系。
+5. 能用STL完成常见数据处理、查找、排序、统计、模拟、刷题和小项目。
+
+
+一、学习STL之前要先补好的C++基础
+
+1. 模板基础
+   - 函数模板：template <typename T>
+   - 类模板：vector<int>、map<string, int>这类写法的含义
+   - typename、auto、decltype的基本使用
+
+2. 引用和const
+   - T&、const T&、T&&的基本区别
+   - 为什么遍历容器时经常写 const auto& x
+   - 函数参数什么时候传值，什么时候传引用
+
+3. 运算符重载
+   - operator<
+   - operator==
+   - 自定义类型放进set、map、priority_queue时为什么经常要定义比较规则
+
+4. lambda表达式
+   - [] {}
+   - [=]、[&] 捕获
+   - [](int a, int b) { return a < b; }
+   - lambda在sort、find_if、count_if中的使用
+
+5. 基础内存概念
+   - 栈和堆的区别
+   - vector扩容为什么会导致迭代器失效
+   - 对象拷贝、移动的基本概念
+
+
+二、STL核心学习路线
+
+第1阶段：认识STL整体结构
+
+要学什么：
+1. STL由哪些部分组成
+   - 容器：vector、list、map等，用来存数据
+   - 迭代器：begin、end，用来访问数据
+   - 算法：sort、find、count、reverse等，用来处理数据
+   - 函数对象：less、greater、lambda，用来定义行为
+   - 适配器：stack、queue、priority_queue，用特殊接口包装容器
+   - 分配器：allocator，负责底层内存管理，初学了解即可
+
+2. 理解“容器 + 迭代器 + 算法”的配合方式
+   示例：
+   vector<int> v = {3, 1, 2};
+   sort(v.begin(), v.end());
+
+重点：
+STL不是一堆孤立工具，而是一套“数据结构 + 通用算法”的组合系统。
+
+练习：
+1. 创建vector<int>，插入10个数。
+2. 使用sort排序。
+3. 使用find查找某个数字。
+4. 使用for、迭代器、范围for分别遍历。
+
+
+第2阶段：顺序容器
+
+要学什么：
+1. vector
+   - push_back、pop_back
+   - size、empty、clear
+   - operator[]、at
+   - front、back
+   - insert、erase
+   - reserve、capacity
+   - vector扩容和迭代器失效
+
+2. deque
+   - push_front、push_back
+   - pop_front、pop_back
+   - 适合两端频繁插入删除
+
+3. list
+   - 双向链表
+   - insert、erase效率高
+   - 不支持随机访问，不能写 list[i]
+   - list自己的sort、merge、splice
+
+4. forward_list
+   - 单向链表
+   - 初学了解即可
+
+5. array
+   - 固定大小数组
+   - array<int, 5>
+   - 比普通数组更安全，支持size、begin、end
+
+重点比较：
+1. vector：最常用，随机访问快，尾部插入快。
+2. deque：两端插入删除快。
+3. list：中间插入删除快，但查找慢，不支持下标。
+4. array：大小固定，适合固定长度数据。
+
+练习：
+1. 用vector保存学生成绩，求最高分、最低分、平均分。
+2. 用deque模拟排队，支持队首和队尾加入。
+3. 用list保存任务列表，支持在中间插入和删除任务。
+4. 比较vector和list查找某个元素的写法差异。
+
+
+第3阶段：关联容器
+
+要学什么：
+1. set
+   - 自动排序
+   - 元素唯一
+   - insert、erase、find、count
+
+2. multiset
+   - 自动排序
+   - 元素可以重复
+
+3. map
+   - key-value结构
+   - key自动排序且唯一
+   - insert
+   - operator[]
+   - find
+   - erase
+
+4. multimap
+   - key可以重复
+   - 初学了解即可
+
+5. unordered_set
+   - 哈希表
+   - 查找平均O(1)
+   - 不自动排序
+
+6. unordered_map
+   - 哈希表版map
+   - 统计频率非常常用
+
+重点比较：
+1. set/map：有序，底层通常是红黑树，查找O(log n)。
+2. unordered_set/unordered_map：无序，底层哈希表，平均查找O(1)。
+3. 需要有序输出时用map/set。
+4. 只关心快速查找和统计时用unordered_map/unordered_set。
+
+练习：
+1. 用set去重并输出从小到大的数字。
+2. 用map统计每个学生的分数。
+3. 用unordered_map统计一篇文章中每个单词出现次数。
+4. 用map实现通讯录：姓名 -> 电话。
+5. 对自定义Student类型使用set，并定义排序规则。
+
+
+第4阶段：容器适配器
+
+要学什么：
+1. stack
+   - push、pop、top、empty、size
+   - 后进先出
+   - 适合括号匹配、表达式求值、撤销操作
+
+2. queue
+   - push、pop、front、back
+   - 先进先出
+   - 适合排队、BFS
+
+3. priority_queue
+   - 默认大根堆
+   - top永远是优先级最高的元素
+   - greater实现小根堆
+   - 自定义比较器
+
+重点：
+适配器不是完整容器，它们限制了访问方式，让数据结构更符合特定场景。
+
+练习：
+1. 用stack判断括号是否合法。
+2. 用queue模拟银行排队叫号。
+3. 用priority_queue找出一组数字中最大的前K个。
+4. 用priority_queue完成任务优先级调度。
+
+
+第5阶段：迭代器
+
+要学什么：
+1. 迭代器基本写法
+   - begin()
+   - end()
+   - ++it
+   - *it
+
+2. 常见迭代器类型
+   - iterator
+   - const_iterator
+   - reverse_iterator
+
+3. 迭代器分类
+   - 输入迭代器
+   - 输出迭代器
+   - 前向迭代器
+   - 双向迭代器
+   - 随机访问迭代器
+
+4. 不同容器的迭代器能力
+   - vector、deque、array：支持随机访问，可以 it + n
+   - list、map、set：不支持 it + n，只能++或--
+
+5. 迭代器失效
+   - vector扩容会让原来的迭代器、引用、指针失效
+   - vector中间erase后，被删除位置及后面的迭代器可能失效
+   - list插入删除通常只影响被删除元素
+   - map/set插入一般不影响已有迭代器，删除只影响被删元素
+
+练习：
+1. 用迭代器遍历vector、list、map。
+2. 用reverse_iterator反向输出vector。
+3. 安全删除vector中的偶数。
+4. 安全删除map中value小于60的元素。
+
+
+第6阶段：常用算法
+
+要学什么：
+1. 查找类
+   - find
+   - find_if
+   - binary_search
+   - lower_bound
+   - upper_bound
+   - equal_range
+
+2. 统计类
+   - count
+   - count_if
+   - all_of
+   - any_of
+   - none_of
+
+3. 排序类
+   - sort
+   - stable_sort
+   - partial_sort
+   - nth_element
+
+4. 修改类
+   - copy
+   - replace
+   - replace_if
+   - remove
+   - remove_if
+   - unique
+   - reverse
+   - rotate
+
+5. 数值类
+   - accumulate
+   - inner_product
+   - partial_sum
+
+6. 集合类
+   - set_union
+   - set_intersection
+   - set_difference
+
+重点：
+1. 算法通常不会直接知道容器是什么，只通过迭代器工作。
+2. remove/remove_if不会真正删除容器元素，需要配合erase使用。
+   经典写法：
+   v.erase(remove(v.begin(), v.end(), x), v.end());
+
+3. lower_bound/upper_bound要求数据已经有序。
+
+练习：
+1. 对vector排序并去重。
+2. 找出第一个大于80的成绩。
+3. 统计及格人数。
+4. 删除所有负数。
+5. 计算总分和平均分。
+6. 求两个有序数组的交集。
+
+
+第7阶段：函数对象、比较器和lambda
+
+要学什么：
+1. 标准函数对象
+   - less
+   - greater
+   - equal_to
+
+2. 自定义比较器
+   - 给sort传比较函数
+   - 给set/map传比较规则
+   - 给priority_queue传比较规则
+
+3. lambda表达式
+   - 用lambda排序结构体
+   - 用lambda筛选数据
+   - 捕获外部变量
+
+重点：
+比较器要满足严格弱序：
+1. 如果a应该排在b前面，返回true。
+2. 如果a和b等价，两个方向都应该返回false。
+3. 不要写出逻辑矛盾的比较规则。
+
+练习：
+1. 按学生成绩从高到低排序。
+2. 成绩相同按姓名字典序排序。
+3. 找出所有成绩大于平均分的学生。
+4. priority_queue中按任务截止时间排序。
+
+
+第8阶段：string和常用工具类型
+
+严格来说string不属于早期STL六大组件，但实际开发中必须熟练。
+
+要学什么：
+1. string
+   - size、empty
+   - substr
+   - find
+   - erase
+   - insert
+   - replace
+   - getline
+   - stoi、stol、stod
+
+2. pair
+   - pair<int, string>
+   - make_pair
+   - first、second
+
+3. tuple
+   - tuple<int, string, double>
+   - get<0>
+
+4. optional
+   - 表示可能没有值
+   - C++17内容，了解即可
+
+5. variant
+   - 一个变量保存多种可能类型
+   - C++17内容，了解即可
+
+练习：
+1. 读取一行文本并统计单词数量。
+2. 使用pair保存坐标。
+3. 使用vector<pair<string, int>>保存姓名和成绩。
+4. 用string处理逗号分隔的数据。
+
+
+三、8周学习计划
+
+第1周：STL总览 + vector
+目标：
+理解STL整体结构，熟练使用vector。
+
+每天任务：
+第1天：了解STL六大组件，写出容器、迭代器、算法配合的简单例子。
+第2天：学习vector创建、插入、删除、访问。
+第3天：学习vector遍历：下标、迭代器、范围for。
+第4天：学习vector容量：size、capacity、reserve。
+第5天：练习vector排序、查找、统计。
+第6天：写一个“学生成绩管理小程序”的基础版。
+第7天：复盘本周知识，整理vector常见错误。
+
+本周必须掌握：
+1. vector<int> v;
+2. push_back
+3. sort(v.begin(), v.end())
+4. v.erase(...)
+5. begin/end
+6. 迭代器失效的基本原因
+
+
+第2周：deque、list、array
+目标：
+知道不同顺序容器的适用场景。
+
+每天任务：
+第1天：学习deque，完成双端队列练习。
+第2天：学习list，理解链表和数组的区别。
+第3天：学习list插入、删除、排序。
+第4天：学习array，比较array和普通数组。
+第5天：总结vector、deque、list、array区别。
+第6天：写一个“待办事项列表”程序。
+第7天：复盘本周，做5道顺序容器练习题。
+
+本周必须掌握：
+1. vector适合随机访问。
+2. deque适合两端操作。
+3. list适合频繁中间插入删除。
+4. array大小固定。
+
+
+第3周：set、map
+目标：
+掌握有序关联容器。
+
+每天任务：
+第1天：学习set，完成数字去重和排序。
+第2天：学习multiset，理解重复元素处理。
+第3天：学习map，完成姓名到分数的映射。
+第4天：学习map的find、erase、operator[]区别。
+第5天：学习自定义排序规则。
+第6天：写一个“通讯录管理程序”。
+第7天：复盘本周，比较set/map和vector查找区别。
+
+本周必须掌握：
+1. set元素唯一且自动排序。
+2. map按key排序。
+3. map[key]如果key不存在，会创建默认值。
+4. find比直接用operator[]更适合只查询。
+
+
+第4周：unordered_map、unordered_set + 容器适配器
+目标：
+掌握哈希容器和stack、queue、priority_queue。
+
+每天任务：
+第1天：学习unordered_map，完成单词频率统计。
+第2天：学习unordered_set，完成快速查重。
+第3天：学习stack，完成括号匹配。
+第4天：学习queue，完成排队模拟。
+第5天：学习priority_queue，完成Top K问题。
+第6天：写一个“任务优先级调度器”。
+第7天：复盘本周，比较map和unordered_map。
+
+本周必须掌握：
+1. unordered_map适合快速统计。
+2. stack是后进先出。
+3. queue是先进先出。
+4. priority_queue默认最大值优先。
+
+
+第5周：迭代器专题
+目标：
+理解STL算法为什么能适配不同容器。
+
+每天任务：
+第1天：复习begin/end和iterator。
+第2天：学习const_iterator。
+第3天：学习reverse_iterator。
+第4天：学习迭代器分类。
+第5天：学习迭代器失效规则。
+第6天：练习安全删除容器元素。
+第7天：复盘本周，整理“哪些容器支持it+n”。
+
+本周必须掌握：
+1. end指向最后一个元素后面的位置。
+2. vector迭代器支持随机访问。
+3. list、map、set不能it+n。
+4. 删除元素时要特别注意迭代器失效。
+
+
+第6周：常用算法
+目标：
+用标准算法替代大量手写循环。
+
+每天任务：
+第1天：学习find、find_if。
+第2天：学习count、count_if、all_of、any_of。
+第3天：学习sort、stable_sort、nth_element。
+第4天：学习remove、remove_if、unique。
+第5天：学习lower_bound、upper_bound。
+第6天：学习accumulate和集合算法。
+第7天：写一个“成绩统计与筛选程序”。
+
+本周必须掌握：
+1. sort需要随机访问迭代器，所以不能直接用于list。
+2. lower_bound要求有序。
+3. remove不是真删除，要配合erase。
+4. lambda可以让算法更灵活。
+
+
+第7周：lambda、比较器、自定义类型
+目标：
+让STL能处理自己定义的结构体和类。
+
+每天任务：
+第1天：复习lambda基础语法。
+第2天：用lambda给vector<Student>排序。
+第3天：给set<Student>写比较器。
+第4天：给priority_queue<Task>写比较器。
+第5天：学习operator<和operator==。
+第6天：写一个“学生排名系统”。
+第7天：复盘本周，检查比较器是否正确。
+
+本周必须掌握：
+1. sort可以传lambda。
+2. set/map需要稳定的排序规则。
+3. priority_queue的比较器写法和sort容易混淆，需要多练。
+
+
+第8周：综合项目和复盘
+目标：
+把容器、算法、迭代器组合起来解决完整问题。
+
+建议项目一：学生成绩管理系统
+功能：
+1. 添加学生。
+2. 删除学生。
+3. 修改成绩。
+4. 按姓名查询。
+5. 按成绩排序。
+6. 输出平均分、最高分、最低分。
+7. 统计及格人数。
+
+建议项目二：单词频率统计器
+功能：
+1. 读取一段文本。
+2. 分割单词。
+3. 统计每个单词出现次数。
+4. 按字典序输出。
+5. 按出现次数排序输出。
+
+建议项目三：任务调度模拟器
+功能：
+1. 添加任务名称、优先级、截止时间。
+2. 使用priority_queue选出最优先任务。
+3. 支持完成任务后弹出。
+4. 输出剩余任务列表。
+
+建议项目四：简易通讯录
+功能：
+1. 添加联系人。
+2. 删除联系人。
+3. 修改电话。
+4. 按姓名查找。
+5. 按姓名排序输出。
+6. 检查重复联系人。
+
+
+四、重要知识点清单
+
+必须熟练掌握：
+1. vector
+2. string
+3. map
+4. unordered_map
+5. set
+6. stack
+7. queue
+8. priority_queue
+9. sort
+10. find/find_if
+11. count/count_if
+12. lower_bound/upper_bound
+13. erase-remove惯用法
+14. lambda表达式
+15. 迭代器失效规则
+
+需要理解但不一定一开始精通：
+1. deque
+2. list
+3. multiset
+4. multimap
+5. unordered_set
+6. tuple
+7. optional
+8. allocator
+
+刷题和实际开发中最常用组合：
+1. vector + sort
+2. unordered_map + 计数
+3. map + 有序统计
+4. set + 去重/自动排序
+5. priority_queue + Top K/贪心
+6. stack + 括号/单调栈
+7. queue + BFS
+8. vector + lower_bound
+
+
+五、常见错误和注意事项
+
+1. 不要对空容器调用front、back、top。
+   调用前先判断empty。
+
+2. map[key]会创建元素。
+   如果只想查询，优先使用find。
+
+3. remove不会真正删除元素。
+   正确写法：
+   v.erase(remove(v.begin(), v.end(), value), v.end());
+
+4. lower_bound必须用于有序区间。
+   如果vector没有排序，结果没有意义。
+
+5. sort不能直接用于list。
+   list使用自己的成员函数：
+   lst.sort();
+
+6. vector扩容会导致迭代器、引用、指针失效。
+   如果需要提前插入大量元素，可以先reserve。
+
+7. set里的元素不能直接修改影响排序的字段。
+   如果要改，通常先erase，再insert。
+
+8. priority_queue默认是大根堆。
+   如果想要小根堆：
+   priority_queue<int, vector<int>, greater<int>> pq;
+
+9. 遍历时删除元素要使用erase返回的新迭代器。
+   示例：
+   for (auto it = v.begin(); it != v.end(); ) {
+       if (*it < 0) it = v.erase(it);
+       else ++it;
+   }
+
+10. 自定义比较器不要写成 <= 或 >=。
+    sort比较器通常使用 < 或 >。
+
+
+六、推荐练习题方向
+
+基础练习：
+1. 数组排序去重。
+2. 统计数字出现次数。
+3. 学生成绩排序。
+4. 字符串单词统计。
+5. 括号匹配。
+6. 队列模拟。
+7. 找第K大元素。
+8. 合并两个有序数组。
+
+进阶练习：
+1. Top K高频元素。
+2. 两数之和。
+3. 有效括号。
+4. 滑动窗口最大值。
+5. 单调栈求下一个更大元素。
+6. BFS最短路径。
+7. 区间合并。
+8. 按多个条件排序结构体。
+
+
+七、建议的学习方法
+
+1. 每学一个容器，先问自己三个问题：
+   - 它存什么？
+   - 它适合什么操作？
+   - 它不适合什么操作？
+
+2. 每学一个算法，先问自己三个问题：
+   - 它需要什么迭代器？
+   - 它是否要求数据有序？
+   - 它是否会真正改变容器大小？
+
+3. 每天至少写30分钟代码。
+   STL靠看是不够的，必须多敲、多调试、多比较。
+
+4. 建议每个知识点都写一个最小示例。
+   例如：
+   - vector_demo.cpp
+   - map_demo.cpp
+   - sort_demo.cpp
+   - priority_queue_demo.cpp
+
+5. 每周做一次总结。
+   总结内容：
+   - 本周学了哪些容器？
+   - 每个容器适合什么场景？
+   - 哪些API容易写错？
+   - 哪些题目还不会？
+
+
+八、最终检查标准
+
+如果你能做到下面这些，说明STL基础已经比较扎实：
+
+1. 看见“需要排序”，能想到vector + sort。
+2. 看见“统计次数”，能想到unordered_map。
+3. 看见“自动去重并有序”，能想到set。
+4. 看见“先进先出”，能想到queue。
+5. 看见“后进先出”，能想到stack。
+6. 看见“动态取最大/最小”，能想到priority_queue。
+7. 能解释begin和end的含义。
+8. 能写出erase-remove惯用法。
+9. 能用lambda自定义排序规则。
+10. 能根据场景选择vector、map、unordered_map、set等容器。
+
+
+九、建议学习顺序简表
+
+1. STL整体认识
+2. vector
+3. string
+4. sort/find/count等基础算法
+5. map/unordered_map
+6. set/unordered_set
+7. stack/queue/priority_queue
+8. 迭代器深入
+9. lambda和自定义比较器
+10. 综合项目练习
+
+
+一句话记忆：
+STL学习的核心不是背API，而是学会“根据问题选择合适的容器，再用迭代器和算法高效处理数据”。
