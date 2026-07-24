@@ -27,8 +27,14 @@ class Student{
     ~Student(){
         cout<<"student对象被销毁"<<endl;
     }
+    //友元
+    friend  void visit(const Student& s);
 
 };
+
+void visit(const Student& s){
+    cout<<s.name<<endl;
+}
 int Student:: count=10;
 int main(){
     string na;
