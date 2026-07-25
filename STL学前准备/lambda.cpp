@@ -1,6 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+//lambda 相当于没有名字的临时函数
+
 class student{
     private:
     string name;
@@ -20,7 +22,7 @@ class student{
 
 
 int main(){
-    //lambda
+    //lambda  
     int x=10;
     double y=2.5;
     auto p=[&](int a,int b){return x+y+a*b;};
